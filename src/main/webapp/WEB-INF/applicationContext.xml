@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <mvc:annotation-driven/>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving
+        up static resources in the ${webappRoot}/resources directory -->
+    <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
+
+    <context:component-scan base-package="ua.dp.strahovik.controller"/>
+
+    <!-- ************ JPA configuration *********** -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- TODO: add to hibernate config connPool (dbcp, c3po or whats better), enable 2 level cache, fetch.type.lazy-->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <!--<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />-->
+        <!--<property name="dataSource" ref="restDemoDS" />-->
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="ua.dp.strahovik"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect"/>
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/yalantis_4_android"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+
+
+    <bean id="eventDAO" class="ua.dp.strahovik.dao.EventDAOImpl">
+        <property name="companyDAO" ref="companyDAO"></property>
+    </bean>
+    <bean id="companyDAO" class="ua.dp.strahovik.dao.CompanyDAOImpl"/>
+
+    <bean id="companyService" class="ua.dp.strahovik.service.CompanyServiceImpl">
+        <property name="companyDAO" ref="companyDAO"></property>
+    </bean>
+
+    <bean id="eventService" class="ua.dp.strahovik.service.EventServiceImpl">
+        <property name="eventDAO" ref="eventDAO"></property>
+    </bean>
+
+    <bean id="eventController" class="ua.dp.strahovik.controller.rest.EventController">
+        <property name="eventService" ref="eventService"></property>
+    </bean>
+</beans>
