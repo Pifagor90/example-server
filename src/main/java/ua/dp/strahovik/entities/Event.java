@@ -28,7 +28,6 @@ import java.util.List;
 @ViewScoped
 public class Event {
 
-//    TODO  change to string id
     @Id
     @Column(name="ID", unique=true)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
