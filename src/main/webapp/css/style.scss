@@ -1,0 +1,9 @@
+@import "../../../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap";
+
+.ui-inputfield{
+  @extend .form-control;
+}
+
+.ui-autocomplete{
+  width: 100%;
+}
