@@ -1,8 +1,12 @@
 package ua.dp.strahovik.entities;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.*;
 import java.net.MalformedURLException;
@@ -16,17 +20,13 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name="Events.getEventByIdFetchEager",
                 query="SELECT event FROM Event event LEFT JOIN FETCH event.photos WHERE event.id = :id"),
-//        Alternative way "SELECT DISTINCT event FROM Event event LEFT JOIN FETCH event.photos"
-//       but it deletes duplicates from photos
         @NamedQuery(name="Events.getEventListFetchEager",
                 query="SELECT event FROM Event event LEFT JOIN FETCH event.photos"),
         @NamedQuery(name="Events.getEventListByEventStateFetchEager",
                 query="SELECT event FROM Event event LEFT JOIN FETCH event.photos WHERE" +
                         " event.eventState = :eventState"),
 })
-@ManagedBean(name="event")
-@ViewScoped
-public class Event {
+public class Event implements Cloneable{
 
     @Id
     @Column(name="ID", unique=true)
@@ -66,19 +66,6 @@ public class Event {
         creationDate = new Date();
         if (eventState == null){
             eventState = EventState.WAITING;
-        }
-    }
-
-//    @PostConstruct
-//    public void init() {
-//        photos.add(null);
-//    }
-
-    public void extend() {
-        try {
-            photos.add(new URL("http://"));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
     }
 

@@ -1,9 +1,9 @@
 package ua.dp.strahovik.service;
 
 
-import ua.dp.strahovik.entities.Company;
 import ua.dp.strahovik.entities.Event;
 import ua.dp.strahovik.entities.EventState;
+import ua.dp.strahovik.managedBeans.EventBean;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface EventService {
 
     public void addEvent(Event event);
 
-    public void addEvent(Event event, Company company);
+    public String addEvent(EventBean eventBean);
 
     public Event getEventById (Long id);
 

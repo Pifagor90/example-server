@@ -7,7 +7,6 @@ import java.util.List;
 
 @Entity
 @Table(name="Companies")
-@ManagedBean(name="company")
 public class Company {
 
     @Id

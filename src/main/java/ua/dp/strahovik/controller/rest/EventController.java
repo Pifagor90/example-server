@@ -36,7 +36,7 @@ public class EventController {
         return eventList;
     }
 
-    @RequestMapping(value = "/eventStateList{eventState}", method = RequestMethod.GET)
+    @RequestMapping(value = "/eventStateList/{eventState}", method = RequestMethod.GET)
     public List<Event> getEventListByEventState(@RequestParam(value = "eventState", required = true) EventState eventState) {
         return eventService.getEventListByEventState(eventState);
     }

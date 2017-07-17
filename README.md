@@ -6,4 +6,7 @@
  
  Mysql 5.7.11
  
- still contains bugs
+ Requires node.js to install node modules
+ 
+ After you need to type npm install into your terminal from the project folder
+

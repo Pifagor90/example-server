@@ -28,6 +28,7 @@ public class CompanyServiceImpl implements CompanyService{
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<String> getCompanyNamesWhereNameLike(String companyName) {
+        logger.debug("invoked List<String> getCompanyNamesWhereNameLike(String companyName) companyName=" + companyName);
         List<Company> companies = companyDAO.getCompaniesWhereNameLike(companyName);
         List<String> names = new ArrayList<>(companies.size());
         for(Company company : companies){

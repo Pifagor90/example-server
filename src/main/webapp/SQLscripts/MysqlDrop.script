@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS 'Events'
-DROP TABLE IF EXISTS 'Event_photos_url'
-DROP TABLE IF EXISTS 'Companies'
+DROP TABLE IF EXISTS `Events`
+DROP TABLE IF EXISTS `Event_photos_url`
+DROP TABLE IF EXISTS `Companies`
 

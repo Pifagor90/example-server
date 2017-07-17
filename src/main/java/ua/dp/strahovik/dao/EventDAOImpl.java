@@ -18,10 +18,11 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Repository
 public class EventDAOImpl implements EventDAO {
-//    TODO: implement normal logging
+
     private static final Logger logger = LoggerFactory.getLogger(EventDAOImpl.class);
 
     @PersistenceContext
@@ -48,19 +49,6 @@ public class EventDAOImpl implements EventDAO {
                 }
             }
         }
-        URL templateUrl = null;
-        try {
-            templateUrl = new URL("http://");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        event.getPhotos().removeIf(Predicate.isEqual(templateUrl));
-//        for (URL url:event.getPhotos()){
-//            if (url.equals(templateUrl)){
-//                url
-//            }
-//        }
-
         entityManager.persist(event);
 
         logger.info("Event saved successfully, Event Details=" + event);

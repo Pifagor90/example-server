@@ -7,111 +7,184 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui">
-<h:head>
-</h:head>
-<h:body>
-    <f:view>
-        <!--TODO: add facelet footer, header, css etc.-->
-        <h1>Add Event</h1>
-        <h:form>
-            <table>
-                <tr>
-                    <td><label>Event state</label></td>
-                    <td>
-                        <h:selectOneMenu value="#{event.eventState}">
-                            <f:selectItems value="#{eventStates.eventStates}"/>
-                        </h:selectOneMenu>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>Registration date</label></td>
-                    <td>
-                        <p:calendar id="registrationDate" value="#{event.registrationDate}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>Deadline date</label></td>
-                    <td>
-                        <p:calendar id="deadlineDate" value="#{event.deadlineDate}" showOn="button"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>Responsible company</label></td>
-                    <td>
-                        <p:autoComplete id="responsible" minQueryLength="2" value="#{company.name}"
-                                        completeMethod="#{companyService.getCompanyNamesWhereNameLike}" effect="fade"/>
-                     </td>
-                </tr>
-                <tr>
-                    <td><label>Photos</label></td>
-                    <td>
-                        <ui:repeat value="#{event.photos}" var="photo">
-                            <h:inputText value="#{photo}"/>
-                            <br/>
-                        </ui:repeat>
-                        <h:commandButton value="Extend">
-                            <f:ajax listener="#{event.extend}"
-                                    process="@form"
-                                    render="@form" />
-                        </h:commandButton>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>Description</label></td>
-                    <td><h:inputText id="description" value="#{event.description}"></h:inputText>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"><h:commandButton action="#{eventService.addEvent(event, company)}"
-                                                     value="Add Event"></h:commandButton>
-                    </td>
-                </tr>
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-            </table>
+            <title>primestrap</title>
+        </f:facet>
 
-        </h:form>
+        <f:facet name="middle">
 
+            <h:outputScript type="text/javascript"
+                            src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"/>
 
-        <br/>
+            <h:outputScript name="webjars/bootstrap/3.3.7-1/js/bootstrap.js"/>
+        </f:facet>
 
-        <h3>Persons List</h3>
-        <br/>
-        <c:if test="${!empty eventService.eventList}">
-            <table class="tg">
-                <tr>
-                    <th>Event ID</th>
-                    <th>Event State</th>
-                    <th>Creation Date</th>
-                    <th>Registration Date</th>
-                    <th>Deadline Date</th>
-                    <th>Responsible company</th>
-                    <th>Description</th>
-                    <th>Photos</th>
-                </tr>
-                <ui:repeat var="event" value="${eventService.eventList}">
-                    <tr>
-                        <td>${event.id}</td>
-                        <td>${event.eventState}</td>
-                        <td>${event.creationDate}</td>
-                        <td>${event.registrationDate}</td>
-                        <td>${event.deadlineDate}</td>
-                        <td>${event.responsible.name}</td>
-                        <td>${event.description}</td>
-                        <td>
-                            <c:if test="${empty event.photos}">
-                                <table class="photos_inside">
+        <link type="text/css" rel="stylesheet" href="css/style.css"/>
 
-                                        <ui:repeat var="photo" value="${event.photos}">
-                                            <tr><td>${photo}</td></tr>
+    </h:head>
+    <h:body>
+        <div class="container theme-showcase" role="main">
+            <f:view>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1>Add Event</h1>
+                    </div>
+                    <div class="panel-body">
+                        <h:form styleClass="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Event state</label>
+
+                                <div class="col-sm-10">
+                                    <h:selectOneMenu
+                                            value="#{event.eventState}"
+                                            styleClass="form-control">
+                                        <f:selectItems
+                                                value="#{eventStates.eventStates}"
+                                                var="state"
+                                                itemLabel="#{state.label}"
+                                                itemValue="#{state}"/>
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <label class="control-label col-sm-2">Registration date</label>
+
+                                <div class="col-sm-10">
+                                    <p:calendar
+                                            id="registrationDate"
+                                            value="#{event.registrationDate}"/>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Deadline date</label>
+
+                                <div class="col-sm-10">
+                                    <p:calendar
+                                            id="deadlineDate"
+                                            value="#{event.deadlineDate}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="responsible" value="Responsible"
+                                               styleClass="control-label col-sm-2"/>
+
+                                <div class="col-sm-10">
+                                    <p:autoComplete
+                                            id="responsible" minQueryLength="2"
+                                            value="#{event.responsible.name}"
+                                            completeMethod="#{companyService.getCompanyNamesWhereNameLike}"
+                                            effect="fade"
+                                            label="Responsible"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h:panelGroup layout="block" id="photos">
+                                    <label class="control-label col-sm-2">Photos</label>
+
+                                    <div class="col-sm-10">
+                                        <ui:repeat value="#{event.photos}" var="photo" id="repeatId">
+                                            <h:inputText
+                                                    id="photoUrlInput"
+                                                    value="#{photo.url}"
+                                                    converter="ua.dp.strahovik.convertors.URLConverter"
+                                                    styleClass="form-control">
+                                                <f:validator validatorId="ua.dp.strahovik.validator.UrlValidator"/>
+                                                <p:clientValidator event="keyup"/>
+
+                                            </h:inputText>
+                                            <br/>
+                                            <p:message for="photoUrlInput" styleClass="alert-danger" display="text"/>
+                                            <br/>
                                         </ui:repeat>
+                                        <br/>
+                                        <h:commandButton value="Add photo" styleClass="btn btn-default">
+                                            <f:ajax execute="@all" render="@form" listener="#{event.extend}"/>
+                                        </h:commandButton>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Description</label>
 
-                                </table>
-                            </c:if>
-                        </td>
-                    </tr>
-                </ui:repeat>
-            </table>
-        </c:if>
-    </f:view>
-</h:body>
+                                <div class="col-sm-10">
+                                    <h:inputTextarea
+                                            id="description"
+                                            value="#{event.description}"
+                                            styleClass="form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <p:commandButton
+                                            value="Ajax"
+                                            update="photos"
+                                            icon="ui-icon-check"
+                                            validateClient="true"/>
+                                    <h:commandButton
+                                            action="#{eventService.addEvent(event)}"
+                                            value="Add Event"
+                                            styleClass="btn btn-default"/>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Persons List</h3>
+                    </div>
+                    <div class="panel-body">
+                        <c:if test="${!empty eventService.eventList}">
+                            <table class="tg table table-bordered table-striped table-hover">
+                                <tr>
+                                    <th>Event ID</th>
+                                    <th>Event State</th>
+                                    <th>Creation Date</th>
+                                    <th>Registration Date</th>
+                                    <th>Deadline Date</th>
+                                    <th>Responsible company</th>
+                                    <th>Description</th>
+                                    <th>Photos</th>
+                                </tr>
+                                <ui:repeat var="event" value="${eventService.eventList}">
+                                    <tr>
+                                        <td>${event.id}</td>
+                                        <td>${event.eventState.label}</td>
+                                        <td>${event.creationDate}</td>
+                                        <td>${event.registrationDate}</td>
+                                        <td>${event.deadlineDate}</td>
+                                        <td>${event.responsible.name}</td>
+                                        <td>${event.description}</td>
+                                        <td>
+                                            <c:if test="${!empty event.photos}">
+                                                <table class="photos_inside">
+
+                                                    <ui:repeat var="photo" value="${event.photos}">
+                                                        <tr>
+                                                            <td>${photo}</td>
+                                                        </tr>
+                                                    </ui:repeat>
+
+                                                </table>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
+                        </c:if>
+                    </div>
+                </div>
+            </f:view>
+        </div>
+    </h:body>
 </html>
